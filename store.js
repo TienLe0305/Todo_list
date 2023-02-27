@@ -1,8 +1,9 @@
 import { createStore } from "./core.js";
 import reducer from "./reducer.js";
+import withLogger from "./logger.js";
 
-const { attach, connect, distpatch } = createStore(reducer);
+const { attach, connect, dispatch } = createStore(withLogger(reducer));
 
-window.distpatch = distpatch;
+window.dispatch = dispatch;
 
 export { attach, connect };

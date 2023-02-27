@@ -1,16 +1,38 @@
 import html from "../core.js";
+import { connect } from "../store.js";
 
-function TodoItem() {
+function TodoItem({ todo, index, editTodo }) {
   return html`
-    <li class="completed">
+    <li
+      class="${todo.completed && "completed"} ${editTodo === index &&
+      "editing"}"
+    >
       <div class="view">
-        <input class="toggle" type="checkbox" checked />
-        <label>Taste JavaScript</label>
-        <button class="destroy"></button>
+        <input
+          class="toggle"
+          type="checkbox"
+          ${todo.completed && " checked "}
+          onchange="dispatch('toggle', ${index})"
+        />
+        <label ondblclick="dispatch('startEdit', ${index})"
+          >${todo.title}</label
+        >
+        <button
+          class="destroy"
+          onclick="dispatch('destroy', ${index})"
+        ></button>
       </div>
-      <input class="edit" value="Create a TodoMVC template" />
+      <input
+        class="edit"
+        value="${todo.title}"
+        onkeyup="event.keyCode === 13 &&
+      dispatch('endEdit', this.value.trim()) || event.keyCode === 27 &&
+      dispatch('cancelEdit', this.value.trim())"
+        onblur="dispatch('endEdit',
+      this.value.trim())"
+      />
     </li>
   `;
 }
 
-export default TodoItem;
+export default connect()(TodoItem);
